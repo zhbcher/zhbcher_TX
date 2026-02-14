@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - 退休工资计算APP</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>后台管理</h2>
+                <p>退休工资计算APP</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">数据看板</span>
+                </a>
+                <a href="#users" class="nav-item" data-page="users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">用户管理</span>
+                </a>
+                <a href="#news" class="nav-item" data-page="news">
+                    <span class="nav-icon">📰</span>
+                    <span class="nav-text">资讯管理</span>
+                </a>
+                <a href="#calculations" class="nav-item" data-page="calculations">
+                    <span class="nav-icon">💰</span>
+                    <span class="nav-text">计算记录</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部栏 -->
+            <div class="top-bar">
+                <div class="top-bar-left">
+                    <h1 id="pageTitle">数据看板</h1>
+                </div>
+                <div class="top-bar-right">
+                    <button class="btn-primary" onclick="refreshData()">刷新数据</button>
+                    <a href="/" class="btn-secondary">返回前端</a>
+                </div>
+            </div>
+
+            <!-- 页面内容 -->
+            <div id="content-area">
+                <!-- 数据看板 -->
+                <div id="dashboard" class="content-page active">
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="totalUsers">0</div>
+                                <div class="stat-label">总用户数</div>
+                            </div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-icon">📰</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="totalNews">0</div>
+                                <div class="stat-label">资讯数量</div>
+                            </div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="avgPension">0</div>
+                                <div class="stat-label">平均退休金(元)</div>
+                            </div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-content">
+                                <div class="stat-value">100%</div>
+                                <div class="stat-label">系统运行中</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-section">
+                        <h3>最近活动</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>类型</th>
+                                        <th>描述</th>
+                                        <th>时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentActivity">
+                                    <!-- 动态加载 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户管理 -->
+                <div id="users" class="content-page">
+                    <div class="table-header">
+                        <button class="btn-primary" onclick="openUserModal()">新增用户</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>出生日期</th>
+                                    <th>退休年龄</th>
+                                    <th>邮箱</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- 动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 资讯管理 -->
+                <div id="news" class="content-page">
+                    <div class="table-header">
+                        <button class="btn-primary" onclick="openNewsModal()">发布资讯</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>标题</th>
+                                    <th>摘要</th>
+                                    <th>发布日期</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="newsTable">
+                                <!-- 动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 计算记录 -->
+                <div id="calculations" class="content-page">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>工龄</th>
+                                    <th>基本工资</th>
+                                    <th>社保比例</th>
+                                    <th>退休年龄</th>
+                                    <th>计算结果</th>
+                                    <th>计算时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calculationsTable">
+                                <!-- 动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户模态框 -->
+    <div id="userModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增用户</h3>
+                <button class="close-btn" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label>姓名</label>
+                    <input type="text" id="userNameInput" required>
+                </div>
+                <div class="form-group">
+                    <label>性别</label>
+                    <select id="userGenderInput">
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>出生日期</label>
+                    <input type="date" id="birthDateInput" required>
+                </div>
+                <div class="form-group">
+                    <label>退休年龄</label>
+                    <input type="number" id="retirementAgeInput" value="60" required>
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="userEmailInput">
+                </div>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="tel" id="userPhoneInput">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('userModal')">取消</button>
+                    <button type="submit" class="btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 资讯模态框 -->
+    <div id="newsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>发布资讯</h3>
+                <button class="close-btn" onclick="closeModal('newsModal')">&times;</button>
+            </div>
+            <form id="newsForm" onsubmit="saveNews(event)">
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" id="newsTitleInput" required>
+                </div>
+                <div class="form-group">
+                    <label>摘要</label>
+                    <input type="text" id="newsSummaryInput">
+                </div>
+                <div class="form-group">
+                    <label>内容</label>
+                    <textarea id="newsContentInput" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>发布日期</label>
+                    <input type="date" id="newsDateInput" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('newsModal')">取消</button>
+                    <button type="submit" class="btn-primary">发布</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

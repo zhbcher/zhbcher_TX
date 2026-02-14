@@ -3,169 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>退休工资计算APP</title>
+    <title>退休倒计时 - 计划您的美好退休生活</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- 首页 - 退休倒计时 -->
+        <!-- 首页 -->
         <div id="page-home" class="page active">
-            <div class="page-header">
-                <h1>退休倒计时</h1>
-                <p class="subtitle">距离退休还有</p>
+            <!-- 标题区 -->
+            <div class="header">
+                <h1 class="main-title">退休倒计时</h1>
+                <p class="subtitle">计划您的美好退休生活</p>
             </div>
-            <div class="retirement-countdown">
-                <div class="countdown-number" id="days">0</div>
-                <div class="countdown-label">天</div>
-                <div class="countdown-number" id="hours">0</div>
-                <div class="countdown-label">时</div>
-                <div class="countdown-number" id="minutes">0</div>
-                <div class="countdown-label">分</div>
-                <div class="countdown-number" id="seconds">0</div>
-                <div class="countdown-label">秒</div>
+
+            <!-- 倒计时卡片 -->
+            <div class="countdown-card">
+                <div class="countdown-icon">⏰</div>
+                <p class="countdown-label">距离退休还有</p>
+                <div class="countdown-number" id="daysCount">4599</div>
+                <p class="countdown-days">天</p>
             </div>
-            <button class="btn-primary" onclick="showPage('page-calculation')">开始计算退休金</button>
+
+            <!-- 用户信息卡片 -->
+            <div class="user-info-card">
+                <div class="card-header">
+                    <span class="card-title">退休信息</span>
+                    <button class="edit-btn" onclick="editUserInfo()">修改</button>
+                </div>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">姓名</span>
+                        <span class="info-value" id="userName">用户</span>
+                        <span class="info-value" id="userNameValue">min1</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">性别</span>
+                        <span class="info-value" id="userGender">男</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">出生日期</span>
+                        <span class="info-value" id="birthDate">1978-09-18</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">退休年龄</span>
+                        <span class="info-value" id="retirementAge">60岁</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">预计退休日期</span>
+                        <span class="info-value highlight" id="expectedDate">2038年9月18日</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 温馨提示 -->
+            <div class="tips-card">
+                <div class="tips-header">
+                    <span class="tips-icon">💡</span>
+                    <span class="tips-title">温馨提示</span>
+                </div>
+                <ul class="tips-list">
+                    <li class="tip-item">提前规划退休生活，享受美好时光</li>
+                    <li class="tip-item">关注养老金政策变化</li>
+                    <li class="tip-item">保持健康的生活方式</li>
+                </ul>
+            </div>
         </div>
 
-        <!-- 退休金计算页面 -->
-        <div id="page-calculation" class="page">
-            <div class="page-header">
-                <h1>退休金计算</h1>
-            </div>
-            <div class="calculation-form">
-                <div class="form-group">
-                    <label>工龄（年）</label>
-                    <input type="number" id="workYears" placeholder="请输入工龄" min="0">
-                </div>
-                <div class="form-group">
-                    <label>基本工资（元）</label>
-                    <input type="number" id="basicSalary" placeholder="请输入基本工资" min="0">
-                </div>
-                <div class="form-group">
-                    <label>社保缴纳比例（%）</label>
-                    <input type="number" id="socialSecurityRate" value="8" min="0" max="100">
-                </div>
-                <div class="form-group">
-                    <label>退休年龄</label>
-                    <select id="retirementAge">
-                        <option value="50">女工人 50岁</option>
-                        <option value="55">女干部 55岁</option>
-                        <option value="60">男职工 60岁</option>
-                    </select>
-                </div>
-                <button class="btn-primary" onclick="calculatePension()">开始计算</button>
-                <button class="btn-secondary" onclick="showPage('page-home')">返回首页</button>
-            </div>
-            <div id="calculation-result" class="result-box" style="display: none;">
-                <h3>计算结果</h3>
-                <div class="result-item">
-                    <span>预计退休金：</span>
-                    <strong id="pensionResult">0 元</strong>
-                </div>
-                <div class="result-detail">
-                    <p>计算说明：退休金 = 基本工资 × (1 + 工龄 × 1%) × 社保比例</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 退休资讯页面 -->
+        <!-- 资讯页 -->
         <div id="page-news" class="page">
-            <div class="page-header">
-                <h1>退休资讯</h1>
+            <div class="header">
+                <h1 class="main-title">退休资讯</h1>
             </div>
-            <div class="news-list">
-                <div class="news-item">
+            <div class="news-container">
+                <div class="news-card">
                     <div class="news-date">2024-01-15</div>
-                    <div class="news-title">最新退休政策解读</div>
-                    <div class="news-summary">2024年退休政策有重大调整，请注意查看...</div>
+                    <h3 class="news-title">最新退休政策解读</h3>
+                    <p class="news-summary">2024年退休政策有重大调整，请注意查看...</p>
                 </div>
-                <div class="news-item">
+                <div class="news-card">
                     <div class="news-date">2024-01-10</div>
-                    <div class="news-title">退休金计算新公式</div>
-                    <div class="news-summary">新的退休金计算公式已经实施...</div>
+                    <h3 class="news-title">退休金计算新公式</h3>
+                    <p class="news-summary">新的退休金计算公式已经实施...</p>
                 </div>
-                <div class="news-item">
+                <div class="news-card">
                     <div class="news-date">2024-01-05</div>
-                    <div class="news-title">退休生活指南</div>
-                    <div class="news-summary">退休后如何规划生活，享受美好晚年...</div>
+                    <h3 class="news-title">退休生活指南</h3>
+                    <p class="news-summary">退休后如何规划生活，享受美好晚年...</p>
                 </div>
-                <div class="news-item">
-                    <div class="news-date">2024-01-01</div>
-                    <div class="news-title">春节退休人员福利</div>
-                    <div class="news-summary">春节期间退休人员有哪些福利待遇...</div>
+            </div>
+        </div>
+
+        <!-- 计算页 -->
+        <div id="page-calculator" class="page">
+            <div class="header">
+                <h1 class="main-title">退休工资计算器</h1>
+                <p class="subtitle">预估您的退休养老金</p>
+            </div>
+            <div class="calculator-section">
+                <div class="action-bar">
+                    <button class="btn-load" onclick="loadFromArchive()">从档案加载</button>
+                </div>
+                <div class="calculator-form">
+                    <div class="form-group">
+                        <label>工龄（年）</label>
+                        <input type="number" id="workYears" value="19" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>缴费工资（元）</label>
+                        <input type="number" id="contributionSalary" value="220000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>平均工资（元）</label>
+                        <input type="number" id="avgSalary" value="8000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>缴费系数</label>
+                        <input type="number" id="contributionRate" value="2" step="0.1" min="0.6" max="3.0">
+                        <span class="form-hint">通常在0.6-3.0之间，1.0表示按平均工资缴费</span>
+                    </div>
+                    <div class="form-group">
+                        <label>退休年龄</label>
+                        <select id="retAgeSelect">
+                            <option value="50">50岁</option>
+                            <option value="55">55岁</option>
+                            <option value="60" selected>60岁 (男职工)</option>
+                        </select>
+                    </div>
+                    <button class="btn-calculate" onclick="calculatePension()">开始计算</button>
+                </div>
+                <div id="resultCard" class="result-card" style="display: none;">
+                    <div class="result-header">
+                        <h3>计算结果</h3>
+                        <span class="result-badge">预估</span>
+                    </div>
+                    <div class="result-amount">
+                        <span class="result-label">预计月养老金</span>
+                        <strong class="result-number" id="pensionAmount">0</strong>
+                        <span class="result-unit">元</span>
+                    </div>
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="detail-label">基础养老金</span>
+                            <span class="detail-value" id="basePension">0 元</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">个人账户养老金</span>
+                            <span class="detail-value" id="personalPension">0 元</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">过渡性养老金</span>
+                            <span class="detail-value" id="transitionPension">0 元</span>
+                        </div>
+                    </div>
+                    <div class="result-note">
+                        <p>※ 计算结果仅供参考，实际退休金以社保部门核定为准</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- 我的页面 -->
         <div id="page-profile" class="page">
-            <div class="page-header">
-                <h1>我的</h1>
+            <div class="header">
+                <h1 class="main-title">我的</h1>
             </div>
-            <div class="profile-section">
-                <div class="user-info">
-                    <h3>用户信息</h3>
-                    <div class="info-item">
-                        <label>姓名：</label>
-                        <input type="text" id="userName" placeholder="请输入姓名">
-                    </div>
-                    <div class="info-item">
-                        <label>手机号：</label>
-                        <input type="tel" id="userPhone" placeholder="请输入手机号">
-                    </div>
-                    <div class="info-item">
-                        <label>邮箱：</label>
-                        <input type="email" id="userEmail" placeholder="请输入邮箱">
-                    </div>
-                    <button class="btn-primary" onclick="saveUserInfo()">保存信息</button>
+            <div class="profile-card">
+                <div class="avatar">
+                    <div class="avatar-icon">👤</div>
                 </div>
-                <div class="user-stats">
-                    <h3>统计信息</h3>
-                    <div class="stat-item">
-                        <span>已保存记录：</span>
-                        <strong id="savedRecords">0</strong>
-                    </div>
-                    <div class="stat-item">
-                        <span>注册方式：</span>
-                        <strong id="registerMethod">未注册</strong>
-                    </div>
-                </div>
+                <h2 class="profile-name" id="profileName">min1</h2>
+                <p class="profile-email" id="profileEmail">min1@example.com</p>
             </div>
-        </div>
-
-        <!-- 注册页面 -->
-        <div id="page-register" class="page">
-            <div class="page-header">
-                <h1>注册</h1>
-            </div>
-            <div class="register-form">
-                <div class="form-group">
-                    <label>注册方式</label>
-                    <div class="register-method">
-                        <label class="radio-label">
-                            <input type="radio" name="registerMethod" value="phone" checked>
-                            <span>手机号</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="registerMethod" value="email">
-                            <span>邮箱</span>
-                        </label>
-                    </div>
+            <div class="menu-list">
+                <div class="menu-item" onclick="navigateTo('page-user-info')">
+                    <span>个人信息</span>
+                    <span class="arrow">›</span>
                 </div>
-                <div class="form-group">
-                    <label id="phoneLabel">手机号</label>
-                    <input type="tel" id="registerPhone" placeholder="请输入手机号" maxlength="11">
+                <div class="menu-item" onclick="navigateTo('page-calc-history')">
+                    <span>计算历史</span>
+                    <span class="arrow">›</span>
                 </div>
-                <div class="form-group">
-                    <label id="emailLabel">邮箱</label>
-                    <input type="email" id="registerEmail" placeholder="请输入邮箱">
+                <div class="menu-item" onclick="navigateTo('page-settings')">
+                    <span>设置</span>
+                    <span class="arrow">›</span>
                 </div>
-                <div class="form-group" id="codeGroup" style="display: none;">
-                    <label>验证码</label>
-                    <input type="text" id="verifyCode" placeholder="请输入验证码" maxlength="6">
+                <div class="menu-item" onclick="navigateTo('page-about')">
+                    <span>关于</span>
+                    <span class="arrow">›</span>
                 </div>
-                <button class="btn-primary" onclick="register()">注册</button>
-                <button class="btn-secondary" onclick="showPage('page-profile')">返回</button>
             </div>
         </div>
 
@@ -175,13 +200,13 @@
                 <span class="nav-icon">🏠</span>
                 <span class="nav-text">首页</span>
             </div>
-            <div class="nav-item" onclick="showPage('page-calculation')" data-page="page-calculation">
-                <span class="nav-icon">💰</span>
-                <span class="nav-text">计算</span>
-            </div>
             <div class="nav-item" onclick="showPage('page-news')" data-page="page-news">
                 <span class="nav-icon">📰</span>
                 <span class="nav-text">资讯</span>
+            </div>
+            <div class="nav-item" onclick="showPage('page-calculator')" data-page="page-calculator">
+                <span class="nav-icon">💰</span>
+                <span class="nav-text">计算</span>
             </div>
             <div class="nav-item" onclick="showPage('page-profile')" data-page="page-profile">
                 <span class="nav-icon">👤</span>

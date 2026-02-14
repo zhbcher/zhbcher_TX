@@ -27,3 +27,12 @@ Thumbs.db
 
 # Local storage (user data)
 localStorage/
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+retirement.db
+
+# Node modules
+node_modules/
