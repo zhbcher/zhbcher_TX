@@ -165,32 +165,57 @@
         <!-- 我的页面 -->
         <div id="page-profile" class="page">
             <div class="header">
-                <h1 class="main-title">我的</h1>
+                <h1 class="main-title">用户</h1>
             </div>
             <div class="profile-card">
                 <div class="avatar">
                     <div class="avatar-icon">👤</div>
                 </div>
                 <h2 class="profile-name" id="profileName">min1</h2>
-                <p class="profile-email" id="profileEmail">min1@example.com</p>
+                <p class="profile-subname" id="profileSubName">admin1</p>
             </div>
             <div class="menu-list">
                 <div class="menu-item" onclick="navigateTo('page-user-info')">
-                    <span>个人信息</span>
-                    <span class="arrow">›</span>
-                </div>
-                <div class="menu-item" onclick="navigateTo('page-calc-history')">
-                    <span>计算历史</span>
+                    <div class="menu-item-content">
+                        <span class="menu-icon">📋</span>
+                        <span class="menu-text">个人信息</span>
+                    </div>
                     <span class="arrow">›</span>
                 </div>
                 <div class="menu-item" onclick="navigateTo('page-settings')">
-                    <span>设置</span>
+                    <div class="menu-item-content">
+                        <span class="menu-icon">⚙️</span>
+                        <span class="menu-text">设置</span>
+                    </div>
                     <span class="arrow">›</span>
                 </div>
-                <div class="menu-item" onclick="navigateTo('page-about')">
-                    <span>关于</span>
+                <div class="menu-item highlight" onclick="openAdminPanel()">
+                    <div class="menu-item-content">
+                        <span class="menu-icon">🔧</span>
+                        <span class="menu-text">后台管理</span>
+                    </div>
                     <span class="arrow">›</span>
                 </div>
+                <div class="menu-item" onclick="navigateTo('page-calc-history')">
+                    <div class="menu-item-content">
+                        <span class="menu-icon">📊</span>
+                        <span class="menu-text">计算历史</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+                <div class="menu-item" onclick="navigateTo('page-settings')">
+                    <div class="menu-item-content">
+                        <span class="menu-icon">⚙️</span>
+                        <span class="menu-text">设置</span>
+                    </div>
+                    <span class="arrow">›</span>
+                </div>
+            </div>
+            <div class="logout-section">
+                <button class="btn-logout" onclick="logout()">退出登录</button>
+            </div>
+            <div class="version-info">
+                <p>退休工资计算器 v1.0.0</p>
             </div>
         </div>
 

@@ -38,7 +38,6 @@ function updateCountdown() {
 
 // 从档案加载用户数据
 function loadFromArchive() {
-    // 模拟从档案加载用户数据
     const archiveData = {
         name: 'min1',
         gender: '男',
@@ -50,12 +49,10 @@ function loadFromArchive() {
         contributionRate: 2.0
     };
 
-    // 更新用户信息显示
     if (document.getElementById('userNameValue')) {
         document.getElementById('userNameValue').textContent = archiveData.name;
     }
 
-    // 更新计算表单
     document.getElementById('workYears').value = archiveData.workYears;
     document.getElementById('contributionSalary').value = archiveData.contributionSalary;
     document.getElementById('avgSalary').value = archiveData.avgSalary;
@@ -73,25 +70,17 @@ function calculatePension() {
     const contributionRate = parseFloat(document.getElementById('contributionRate').value) || 1.0;
     const retirementAge = parseInt(document.getElementById('retAgeSelect').value) || 60;
 
-    // 计算个人账户养老金
-    // 个人账户养老金 = 个人账户储存额 ÷ 计发月数
-    const storageAmount = contributionSalary * workYears; // 简化计算
+    const storageAmount = contributionSalary * workYears;
     const calcMonths = getCalcMonths(retirementAge);
     const personalPension = storageAmount / calcMonths;
 
-    // 计算基础养老金
-    // 基础养老金 = (退休时当地上年度在岗职工月平均工资 × (1 + 本人平均缴费工资指数) ÷ 2) × 缴费年限 × 1%
     const basePension = (avgSalary * (1 + contributionRate) / 2) * workYears * 0.01;
 
-    // 计算过渡性养老金（如果有）
-    // 过渡性养老金 = 退休时当地上年度在岗职工月平均工资 × 本人平均缴费工资指数 × 1997年前缴费年限 × 1.4%
-    const transitionYears = Math.max(0, workYears - 15); // 假设15年后为个人账户缴费期间
+    const transitionYears = Math.max(0, workYears - 15);
     const transitionPension = avgSalary * contributionRate * transitionYears * 0.014;
 
-    // 总养老金
     const totalPension = basePension + personalPension + transitionPension;
 
-    // 显示结果
     const resultCard = document.getElementById('resultCard');
     const pensionAmount = document.getElementById('pensionAmount');
     const basePentionEl = document.getElementById('basePension');
@@ -104,14 +93,10 @@ function calculatePension() {
     personalPensionEl.textContent = personalPension.toFixed(2) + ' 元';
     transitionPensionEl.textContent = transitionPension.toFixed(2) + ' 元';
 
-    // 保存计算记录
     saveCalculationRecord(workYears, contributionSalary, avgSalary, contributionRate, retirementAge, totalPension);
-
-    // 发送到后端
     saveToBackend(workYears, contributionSalary, avgSalary, contributionRate, retirementAge, totalPension);
 }
 
-// 获取计发月数（根据退休年龄）
 function getCalcMonths(retirementAge) {
     const monthsMap = {
         50: 195,
@@ -121,7 +106,6 @@ function getCalcMonths(retirementAge) {
     return monthsMap[retirementAge] || 139;
 }
 
-// 保存计算记录到本地
 function saveCalculationRecord(workYears, contributionSalary, avgSalary, contributionRate, retirementAge, totalPension) {
     const records = JSON.parse(localStorage.getItem('calculationRecords') || '[]');
     const record = {
@@ -143,8 +127,7 @@ function saveCalculationRecord(workYears, contributionSalary, avgSalary, contrib
     localStorage.setItem('calculationRecords', JSON.stringify(records));
 }
 
-// 保存到后端
-async function saveToBackend(workYears, contributionSalary, avgSalary, contributionRate, retirementAge, totalPension) {
+function saveToBackend(workYears, contributionSalary, avgSalary, contributionRate, retirementAge, totalPension) {
     try {
         const response = await fetch('/api/calculations', {
             method: 'POST',
@@ -170,7 +153,6 @@ async function saveToBackend(workYears, contributionSalary, avgSalary, contribut
     }
 }
 
-// 编辑用户信息
 function editUserInfo() {
     const newName = prompt('请输入姓名：', document.getElementById('userNameValue').textContent);
     if (newName) {
@@ -182,7 +164,6 @@ function editUserInfo() {
     }
 }
 
-// 保存用户信息
 function saveUserInfo() {
     const userInfo = {
         name: document.getElementById('userNameValue').textContent,
@@ -194,8 +175,7 @@ function saveUserInfo() {
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
 }
 
-// 保存用户信息到后端
-async function saveUserToBackend() {
+function saveUserToBackend() {
     try {
         const userInfo = {
             name: document.getElementById('userNameValue').textContent,
@@ -221,29 +201,66 @@ async function saveUserToBackend() {
     }
 }
 
-// 加载用户信息
 function loadUserInfo() {
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
     if (userInfo.name) {
         document.getElementById('userNameValue').textContent = userInfo.name;
         document.getElementById('profileName').textContent = userInfo.name;
+        document.getElementById('profileSubName').textContent = userInfo.adminName || 'admin1';
     }
+
     if (userInfo.gender) {
         document.getElementById('userGender').textContent = userInfo.gender;
     }
+
     if (userInfo.birthDate) {
         document.getElementById('birthDate').textContent = userInfo.birthDate;
     }
+
     if (userInfo.retirementAge) {
         document.getElementById('retirementAge').textContent = userInfo.retirementAge;
     }
+
+    if (userInfo.email) {
+        document.getElementById('profileEmail').textContent = userInfo.email;
+    }
 }
 
-// 页面初始化
+function openAdminPanel() {
+    window.open('/admin.html', '_blank');
+}
+
+function logout() {
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('calculationRecords');
+
+    if (confirm('确定要退出登录吗？')) {
+        document.getElementById('profileName').textContent = 'min1';
+        document.getElementById('profileSubName').textContent = 'admin1';
+        document.getElementById('userNameValue').textContent = '用户';
+        sessionStorage.clear();
+        alert('已退出登录\n\n要继续使用，请刷新页面重新加载');
+    }
+}
+
+function updateProfileDisplay() {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+    if (userInfo.name) {
+        document.getElementById('profileName').textContent = userInfo.name;
+        document.getElementById('profileSubName').textContent = userInfo.adminName || 'admin1';
+    }
+
+    if (userInfo.email) {
+        document.getElementById('profileEmail').textContent = userInfo.email;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     updateCountdown();
     loadUserInfo();
+    updateProfileDisplay();
     setInterval(updateCountdown, 60000);
 });
 
