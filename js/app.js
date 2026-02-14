@@ -128,29 +128,27 @@ function saveCalculationRecord(workYears, contributionSalary, avgSalary, contrib
 }
 
 function saveToBackend(workYears, contributionSalary, avgSalary, contributionRate, retirementAge, totalPension) {
-    try {
-        const response = await fetch('/api/calculations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                userId: 1,
-                workYears,
-                basicSalary: contributionSalary,
-                socialRate: contributionRate,
-                retirementAge,
-                pension: totalPension,
-                date: new Date().toISOString()
-            })
-        });
-
+    fetch('/api/calculations', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userId: 1,
+            workYears,
+            basicSalary: contributionSalary,
+            socialRate: contributionRate,
+            retirementAge,
+            pension: totalPension,
+            date: new Date().toISOString()
+        })
+    }).then(response => {
         if (response.ok) {
             console.log('记录已保存到数据库');
         }
-    } catch (error) {
+    }).catch(error => {
         console.log('后端未连接，数据仅保存在本地');
-    }
+    });
 }
 
 function editUserInfo() {
@@ -176,29 +174,27 @@ function saveUserInfo() {
 }
 
 function saveUserToBackend() {
-    try {
-        const userInfo = {
-            name: document.getElementById('userNameValue').textContent,
-            gender: document.getElementById('userGender').textContent,
-            birthDate: document.getElementById('birthDate').textContent,
-            retirementAge: parseInt(document.getElementById('retirementAge').textContent),
-            email: document.getElementById('profileEmail').textContent
-        };
+    const userInfo = {
+        name: document.getElementById('userNameValue').textContent,
+        gender: document.getElementById('userGender').textContent,
+        birthDate: document.getElementById('birthDate').textContent,
+        retirementAge: parseInt(document.getElementById('retirementAge').textContent),
+        email: document.getElementById('profileEmail').textContent
+    };
 
-        const response = await fetch('/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userInfo)
-        });
-
+    fetch('/api/users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userInfo)
+    }).then(response => {
         if (response.ok) {
             console.log('用户信息已保存到数据库');
         }
-    } catch (error) {
+    }).catch(error => {
         console.log('后端未连接，数据仅保存在本地');
-    }
+    });
 }
 
 function loadUserInfo() {
