@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 const db = new sqlite3.Database('./retirement.db', (err) => {
     if (err) {
@@ -18,6 +18,11 @@ const db = new sqlite3.Database('./retirement.db', (err) => {
         console.log('已连接到 SQLite 数据库');
         initDatabase();
     }
+});
+
+// 根路径重定向到首页
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 function initDatabase() {
@@ -31,64 +36,85 @@ function initDatabase() {
         phone TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS news (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        content TEXT,
-        summary TEXT,
-        publish_date TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS calculations (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER,
-        work_years INTEGER,
-        basic_salary REAL,
-        social_rate REAL,
-        retirement_age INTEGER,
-        pension REAL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(id)
-    )`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS settings (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        key TEXT UNIQUE,
-        value TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-
-    const defaultNews = [
-        {
-            title: '最新退休政策解读',
-            content: '2024年退休政策有重大调整，请注意查看最新政策文件...',
-            summary: '2024年退休政策有重大调整，请注意查看...',
-            publish_date: '2024-01-15'
-        },
-        {
-            title: '退休金计算新公式',
-            content: '新的退休金计算公式已经实施，更加公平合理...',
-            summary: '新的退休金计算公式已经实施...',
-            publish_date: '2024-01-10'
-        },
-        {
-            title: '退休生活指南',
-            content: '退休后如何规划生活，享受美好晚年时光...',
-            summary: '退休后如何规划生活，享受美好晚年...',
-            publish_date: '2024-01-05'
+    )`, (err) => {
+        if (err) {
+            console.error('创建 users 表失败:', err.message);
+            return;
         }
-    ];
 
-    const stmt = db.prepare('INSERT OR IGNORE INTO news (title, content, summary, publish_date) VALUES (?, ?, ?, ?)');
-    defaultNews.forEach(news => {
-        stmt.run([news.title, news.content, news.summary, news.publish_date]);
+        db.run(`CREATE TABLE IF NOT EXISTS news (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            content TEXT,
+            summary TEXT,
+            publish_date TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`, (err) => {
+            if (err) {
+                console.error('创建 news 表失败:', err.message);
+                return;
+            }
+
+            db.run(`CREATE TABLE IF NOT EXISTS calculations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                work_years INTEGER,
+                basic_salary REAL,
+                social_rate REAL,
+                retirement_age INTEGER,
+                pension REAL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )`, (err) => {
+                if (err) {
+                    console.error('创建 calculations 表失败:', err.message);
+                    return;
+                }
+
+                db.run(`CREATE TABLE IF NOT EXISTS settings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    key TEXT UNIQUE,
+                    value TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                )`, (err) => {
+                    if (err) {
+                        console.error('创建 settings 表失败:', err.message);
+                        return;
+                    }
+
+                    // 所有表创建完成后，插入默认数据
+                    const defaultNews = [
+                        {
+                            title: '最新退休政策解读',
+                            content: '2024年退休政策有重大调整，请注意查看最新政策文件...',
+                            summary: '2024年退休政策有重大调整，请注意查看...',
+                            publish_date: '2024-01-15'
+                        },
+                        {
+                            title: '退休金计算新公式',
+                            content: '新的退休金计算公式已经实施，更加公平合理...',
+                            summary: '新的退休金计算公式已经实施...',
+                            publish_date: '2024-01-10'
+                        },
+                        {
+                            title: '退休生活指南',
+                            content: '退休后如何规划生活，享受美好晚年时光...',
+                            summary: '退休后如何规划生活，享受美好晚年...',
+                            publish_date: '2024-01-05'
+                        }
+                    ];
+
+                    const stmt = db.prepare('INSERT OR IGNORE INTO news (title, content, summary, publish_date) VALUES (?, ?, ?, ?)');
+                    defaultNews.forEach(news => {
+                        stmt.run([news.title, news.content, news.summary, news.publish_date]);
+                    });
+                    stmt.finalize();
+
+                    console.log('数据库表初始化完成');
+                });
+            });
+        });
     });
-    stmt.finalize();
-
-    console.log('数据库表初始化完成');
 }
 
 app.get('/api/users', (req, res) => {
